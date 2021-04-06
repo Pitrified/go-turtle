@@ -3,6 +3,12 @@
 [Turtle graphics](https://en.wikipedia.org/wiki/Turtle_graphics)
 in Go.
 
+A couple of samples are in the
+[samples](samples)
+folder.
+
+![sample world](samples/draw/world.png)
+
 ## Turtle
 
 A minimal Turtle agent, moving on a cartesian plane.
@@ -55,8 +61,7 @@ An existing image can be used as base with:
 
 ```go
 img := image.NewRGBA(image.Rect(0, 0, 900, 600))
-draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan},
-    image.Point{0, 0}, draw.Src)
+draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan}, image.Point{0, 0}, draw.Src)
 wi := turtle.NewWorldImage(img)
 ```
 
@@ -105,14 +110,6 @@ w.Close()
 You can create as many turtles as you want.
 When drawing, a turtle sends the line to the world on a channel
 and blocks until it is done.
-
-## Samples
-
-A few samples are in the
-[samples](./samples/draw)
-folder.
-
-![sample world](samples/draw/world.png)
 
 ## Constants
 
@@ -176,6 +173,7 @@ td.Forward(150)
 When drawing points of odd size, the square is centered on the position.
 When drawing points of even size, 
 a pixel from the left and lower side of the square is removed.
+The red points are drawn with `y=0`, along the bottom border of the image.
 
 ![drawing pixels of even size](samples/draw/pixels.png)
 
@@ -185,10 +183,12 @@ To draw a single point, just call forward with 0 dist:
 td.Forward(0)
 ```
 
-### Channel closing (and line drawing)
+### Channels and line drawing
 
 The world draws the `Line` it receives on the `DrawLineCh` channel,
-so you can technically draw a line directly with that.
+so you can technically draw a line directly with that
+skipping the turtles altogether,
+and everything should work.
 
 ## TODO - Ideas
 

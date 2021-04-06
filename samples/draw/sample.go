@@ -130,12 +130,11 @@ func main() {
 
 	// pass an image to the world
 	img := image.NewRGBA(image.Rect(0, 0, 900, 600))
-	draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan},
-		image.Point{0, 0}, draw.Src)
+	draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan}, image.Point{0, 0}, draw.Src)
 	wi := turtle.NewWorldImage(img)
 	tdi := turtle.NewTurtleDraw(wi)
 	circle(tdi)
-	err = wi.SaveImage("world_cyan.png")
+	err = wi.SaveImage("cyan_world.png")
 	if err != nil {
 		fmt.Println("Could not save the image: ", err)
 	}
