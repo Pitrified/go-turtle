@@ -53,5 +53,5 @@ func (t *Turtle) SetHeading(deg float64) {
 
 // Write the Turtle state.
 func (t *Turtle) String() string {
-	return fmt.Sprintf("(%f, %f) ^% 11.6f", t.X, t.Y, t.Deg)
+	return fmt.Sprintf("(%9.4f, %9.4f) ^ %9.4f", t.X, t.Y, t.Deg)
 }

@@ -3,11 +3,17 @@
 [Turtle graphics](https://en.wikipedia.org/wiki/Turtle_graphics)
 in Go.
 
-A couple of samples are in the
+A couple of small showcase scripts are in the
 [samples](samples)
 folder.
 
+Moving around:
+
 ![sample world](samples/draw/world.png)
+
+A conveniently 4K shaped image:
+
+![hilbert curve times 19](samples/hilbert/hilbert_fancy_4k.png)
 
 ## Turtle
 
@@ -39,12 +45,12 @@ t.SetHeading(120)
 
 // vaguely nice printing
 fmt.Println("T:", t)
-// T: (4.000000, 4.000000) ^ 120.000000
+// T: (   4.0000,    4.0000) ^  120.0000
 ```
 
 ## TurtleDraw
 
-Has the same interface of `Turtle`.
+Has the same interface of `Turtle`, but draws.
 Each `TurtleDraw` is attached to a `World`.
 
 Create a new world to draw in:
@@ -57,7 +63,7 @@ When creating a `World` with `NewWorld`,
 an uniform image of the requested size `(width, height)`
 with `SoftBlack` background is generated.
 
-An existing image can be used as base with:
+An existing image can be used as base:
 
 ```go
 img := image.NewRGBA(image.Rect(0, 0, 900, 600))
@@ -127,6 +133,8 @@ Blue  = color.RGBA{0, 0, 255, 255}
 Cyan    = color.RGBA{0, 255, 255, 255}
 Magenta = color.RGBA{255, 0, 255, 255}
 Yellow  = color.RGBA{255, 255, 0, 255}
+
+DarkOrange = color.RGBA{150, 75, 0, 255} // It's just so warm and relaxing
 ```
 
 Cardinal directions:
@@ -171,8 +179,7 @@ td.Forward(150)
 ### Drawing pixels
 
 When drawing points of odd size, the square is centered on the position.
-When drawing points of even size, 
-a pixel from the left and lower side of the square is removed.
+When drawing points of even size, the square is shifted to the top and right.
 The red points are drawn with `y=0`, along the bottom border of the image.
 
 ![drawing pixels of even size](samples/draw/pixels.png)
@@ -192,5 +199,10 @@ and everything should work.
 
 ## TODO - Ideas
 
-* Hilbert sample!
-* More colors!
+- [x] Hilbert sample!
+- [ ] More colors!
+
+## Contributing
+
+This was a side project to another one I was doing to learn Go,
+so all improvements and suggestions for a better code are welcome.
