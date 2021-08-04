@@ -55,5 +55,5 @@ func (td *TurtleDraw) String() string {
 // Send the line to the world and wait for it to be drawn
 func (td *TurtleDraw) drawLine(l Line) {
 	td.W.DrawLineCh <- l
-	<-td.W.DrawLineCh
+	<-td.W.doneLineCh
 }

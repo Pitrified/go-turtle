@@ -13,6 +13,7 @@ type World struct {
 	Width, Height int
 
 	DrawLineCh chan Line
+	doneLineCh chan bool
 	closeCh    chan bool
 }
 
@@ -27,12 +28,14 @@ func NewWorld(width, height int) *World {
 // and start listening on w.DrawLineCh for lines to draw.
 func NewWorldImage(img *image.RGBA) *World {
 	drawCh := make(chan Line)
+	doneCh := make(chan bool)
 	closeCh := make(chan bool)
 	w := &World{
 		Image:      img,
 		Width:      img.Bounds().Max.X,
 		Height:     img.Bounds().Max.Y,
 		DrawLineCh: drawCh,
+		doneLineCh: doneCh,
 		closeCh:    closeCh,
 	}
 	go w.listen()
@@ -60,10 +63,13 @@ func (w *World) listen() {
 	for {
 		select {
 
-		// draw the received line
+		// draw the received line and wait for it to be drawn
+		// the pen inside is a reference, so if you change
+		// color/size before it is drawn it will change
+		// MAYBE not using a reference is better and clearer
 		case line := <-w.DrawLineCh:
 			w.drawLine(line)
-			w.DrawLineCh <- line
+			w.doneLineCh <- true
 
 		// close the channels and exit the func
 		case <-w.closeCh:
