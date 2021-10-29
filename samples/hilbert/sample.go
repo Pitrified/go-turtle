@@ -21,7 +21,8 @@ func hilbertSingle(level int) {
 	imgRes := 1080
 
 	// the step for each Hilbert curve segment
-	segLen := getSegmentLen(level, 80, imgRes)
+	pad := 80
+	segLen := getSegmentLen(level, imgRes-pad)
 
 	// create a new world to draw in
 	w := turtle.NewWorld(imgRes, imgRes)
@@ -75,7 +76,7 @@ func hilbertFancy(level int, sides int) {
 	side := radius * 2 * math.Sin(secAngle/2)
 
 	// segment length for the Hilbert curve
-	segLen := getSegmentLen(level, 0, int(side))
+	segLen := getSegmentLen(level, int(side))
 
 	// create a new world to draw in
 	w := turtle.NewWorld(imgWidth, imgHeight)
@@ -126,8 +127,8 @@ func hilbertFancy(level int, sides int) {
 	w.SaveImage(outImgName)
 }
 
-func getSegmentLen(level, pad, imgRes int) float64 {
-	return float64(imgRes-pad) / (math.Exp2(float64(level-1))*4 - 1)
+func getSegmentLen(level, size int) float64 {
+	return float64(size) / (math.Exp2(float64(level-1))*4 - 1)
 }
 
 func main() {

@@ -1,5 +1,7 @@
 package fractal
 
+import "fmt"
+
 // Generate instructions for a general Lindenmayer system.
 //
 // level: recursion level to reach.
@@ -18,6 +20,7 @@ func Instructions(
 	for len(remaining) > 0 {
 		curChar := remaining[0]
 		remaining = remaining[1:]
+		fmt.Printf("%3d %c %+v\n", level, curChar, remaining)
 
 		switch curChar {
 
@@ -40,6 +43,23 @@ func Instructions(
 		case 'B':
 			if level >= 0 {
 				remaining = rules["B"] + "|" + remaining
+				remaining = Instructions(level-1, instructions, remaining, rules)
+			}
+
+		case 'X':
+			if level == -1 {
+				instructions <- "F"
+			}
+			if level >= 0 {
+				remaining = rules["X"] + "|" + remaining
+				remaining = Instructions(level-1, instructions, remaining, rules)
+			}
+		case 'Y':
+			if level == -1 {
+				instructions <- "F"
+			}
+			if level >= 0 {
+				remaining = rules["Y"] + "|" + remaining
 				remaining = Instructions(level-1, instructions, remaining, rules)
 			}
 		}
@@ -77,3 +97,34 @@ func GenerateHilbert(
 	// will produce instructions on the channel
 	Instructions(level, instructions, remaining, rules)
 }
+
+// The dragon curve drawn using an L-system.
+// variables : A B
+// constants : + −
+// start  : A
+// rules  : (A → A+B), (B → A-B)
+// angle  : 90°
+// A and B both mean "draw forward",
+// + means "turn left by angle", and − means "turn right by angle".
+//
+// https://en.wikipedia.org/wiki/L-system#Example_6:_Dragon_curve
+func GenerateDragon(
+	level int,
+	instructions chan<- string,
+) {
+	rules := map[string]string{
+		"X": "X+Y",
+		"Y": "X-Y",
+		// "X": "Y-X-Y",
+		// "Y": "X+Y+X",
+	}
+	// initial remaining commands to do
+	remaining := "X"
+	// will produce instructions on the channel
+	Instructions(level, instructions, remaining, rules)
+}
+
+// TODO
+// rules[byte]string, use a single case
+// ABCD, XYWZ
+// Document that there are different way of moving
