@@ -85,22 +85,8 @@ func GenerateHilbert(level int, instructions chan<- turtle.Instruction, forward 
 // https://en.wikipedia.org/wiki/Dragon_curve
 // https://en.wikipedia.org/wiki/L-system#Example_6:_Dragon_curve
 func GenerateDragon(level int, instructions chan<- turtle.Instruction, forward float64) {
-	rules := map[byte]string{
-		// 'A': "AF+B", 'B': "AF-B", // identical
-		'X': "X+Y",
-		'Y': "X-Y",
-		// 'X': "Y-X-Y",
-		// 'Y': "X+Y+X",
-		// 'X': "X-Y+X+Y-X",
-		// 'Y': "YY",
-	}
-	// initial remaining commands to do
-	remaining := "X"
-	// remaining := "A"
-	// remaining := "X-Y-Y"
-	// will produce instructions on the channel
-	angle := 90.0
-	Instructions(level, instructions, remaining, rules, angle, forward)
+	rules := map[byte]string{'X': "X+Y", 'Y': "X-Y"}
+	Instructions(level, instructions, "X", rules, 90, forward)
 }
 
 // Generate instructions to draw a Sierpinski arrowhead curve.

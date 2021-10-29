@@ -59,7 +59,11 @@ func (td *TurtleDraw) DoInstruction(i Instruction) {
 	}
 }
 
+var _ fmt.Stringer = &TurtleDraw{}
+
 // Write the TurtleDraw state.
+//
+// Implements: fmt.Stringer
 func (td *TurtleDraw) String() string {
 	sT := td.Turtle.String()
 	sP := td.Pen.String()

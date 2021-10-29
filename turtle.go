@@ -65,7 +65,11 @@ func (t *Turtle) DoInstruction(i Instruction) {
 	}
 }
 
+var _ fmt.Stringer = &Turtle{}
+
 // Write the Turtle state.
+//
+// Implements: fmt.Stringer
 func (t *Turtle) String() string {
 	return fmt.Sprintf("(%9.4f, %9.4f) ^ %9.4f", t.X, t.Y, t.Deg)
 }

@@ -32,22 +32,9 @@ func dragonSingle(level int) {
 
 	for i := range instructions {
 		td.DoInstruction(i)
-		// switch i.Cmd {
-		// case turtle.CmdForward:
-		// 	td.Forward(i.Amount)
-		// case "R":
-		// 	td.Right(90)
-		// 	// td.Right(60)
-		// 	// td.Right(120)
-		// case "L":
-		// 	td.Left(90)
-		// 	// td.Left(60)
-		// 	// td.Left(120)
-		// }
 	}
 
-	// outImgName := fmt.Sprintf("dragon_single_%02d_%d.png", level, imgRes)
-	outImgName := "serp.png"
+	outImgName := fmt.Sprintf("dragon_single_%02d_%d.png", level, imgRes)
 	w.SaveImage(outImgName)
 }
 
