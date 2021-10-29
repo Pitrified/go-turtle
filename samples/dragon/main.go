@@ -38,9 +38,11 @@ func dragonSingle(level int) {
 		case "R":
 			td.Right(90)
 			// td.Right(60)
+			// td.Right(120)
 		case "L":
 			td.Left(90)
 			// td.Left(60)
+			// td.Left(120)
 		}
 	}
 

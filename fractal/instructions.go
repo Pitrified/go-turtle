@@ -113,13 +113,19 @@ func GenerateDragon(
 	instructions chan<- string,
 ) {
 	rules := map[string]string{
-		"X": "X+Y",
-		"Y": "X-Y",
+		"A": "AF+B",
+		"B": "AF-B",
+		// "X": "X+Y",
+		// "Y": "X-Y",
 		// "X": "Y-X-Y",
 		// "Y": "X+Y+X",
+		// "X": "X-Y+X+Y-X",
+		// "Y": "YY",
 	}
 	// initial remaining commands to do
-	remaining := "X"
+	// remaining := "X"
+	remaining := "A"
+	// remaining := "X-Y-Y"
 	// will produce instructions on the channel
 	Instructions(level, instructions, remaining, rules)
 }
