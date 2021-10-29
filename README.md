@@ -118,6 +118,13 @@ w.Close()
 ```
 
 You can create as many turtles as you want.
+The
+[Hilbert](samples/hilbert/sample.go)
+script shows an example where multiple turtles are created and placed,
+and then are all controlled at once to generate the same pattern in different locations.
+In this way,
+the expensive computation to generate the Hilbert fractal instructions is only done once.
+
 When drawing, a turtle sends the line to the world on a channel
 and blocks until it is done.
 

@@ -62,6 +62,7 @@ func (w *World) ResetImageWithSize(width, height int) {
 func (w *World) ResetImageWithSizeColor(width, height int, c color.Color) {
 	m := image.NewRGBA(image.Rect(0, 0, width, height))
 	draw.Draw(m, m.Bounds(), &image.Uniform{c}, image.Point{0, 0}, draw.Src)
+	w.ResetImageWithImage(m)
 }
 
 // Reset the current image to the provided one.
