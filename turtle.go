@@ -51,6 +51,20 @@ func (t *Turtle) SetHeading(deg float64) {
 	t.Deg = deg
 }
 
+// Execute the received instruction.
+func (t *Turtle) DoInstruction(i Instruction) {
+	switch i.Cmd {
+	case CmdForward:
+		t.Forward(i.Amount)
+	case CmdBackward:
+		t.Backward(i.Amount)
+	case CmdLeft:
+		t.Left(i.Amount)
+	case CmdRight:
+		t.Right(i.Amount)
+	}
+}
+
 // Write the Turtle state.
 func (t *Turtle) String() string {
 	return fmt.Sprintf("(%9.4f, %9.4f) ^ %9.4f", t.X, t.Y, t.Deg)

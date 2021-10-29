@@ -1,6 +1,10 @@
 package fractal
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/Pitrified/go-turtle"
+)
 
 // Generate instructions for a general Lindenmayer system.
 //
@@ -12,9 +16,11 @@ import "fmt"
 // https://en.wikipedia.org/wiki/L-system
 func Instructions(
 	level int,
-	instructions chan<- string,
+	instructions chan<- turtle.Instruction,
 	remaining string,
 	rules map[string]string,
+	angle float64,
+	forward float64,
 ) string {
 
 	for len(remaining) > 0 {
@@ -28,39 +34,39 @@ func Instructions(
 			return remaining
 
 		case '+':
-			instructions <- "L"
+			instructions <- turtle.Instruction{Cmd: turtle.CmdLeft, Amount: angle}
 		case '-':
-			instructions <- "R"
+			instructions <- turtle.Instruction{Cmd: turtle.CmdRight, Amount: angle}
 
 		case 'F':
-			instructions <- "F"
+			instructions <- turtle.Instruction{Cmd: turtle.CmdForward, Amount: forward}
 
 		case 'A':
 			if level >= 0 {
 				remaining = rules["A"] + "|" + remaining
-				remaining = Instructions(level-1, instructions, remaining, rules)
+				remaining = Instructions(level-1, instructions, remaining, rules, angle, forward)
 			}
 		case 'B':
 			if level >= 0 {
 				remaining = rules["B"] + "|" + remaining
-				remaining = Instructions(level-1, instructions, remaining, rules)
+				remaining = Instructions(level-1, instructions, remaining, rules, angle, forward)
 			}
 
 		case 'X':
 			if level == -1 {
-				instructions <- "F"
+				instructions <- turtle.Instruction{Cmd: turtle.CmdForward, Amount: forward}
 			}
 			if level >= 0 {
 				remaining = rules["X"] + "|" + remaining
-				remaining = Instructions(level-1, instructions, remaining, rules)
+				remaining = Instructions(level-1, instructions, remaining, rules, angle, forward)
 			}
 		case 'Y':
 			if level == -1 {
-				instructions <- "F"
+				instructions <- turtle.Instruction{Cmd: turtle.CmdForward, Amount: forward}
 			}
 			if level >= 0 {
 				remaining = rules["Y"] + "|" + remaining
-				remaining = Instructions(level-1, instructions, remaining, rules)
+				remaining = Instructions(level-1, instructions, remaining, rules, angle, forward)
 			}
 		}
 	}
@@ -84,7 +90,8 @@ func Instructions(
 // https://en.wikipedia.org/wiki/Hilbert_curve#Representation_as_Lindenmayer_system
 func GenerateHilbert(
 	level int,
-	instructions chan<- string,
+	instructions chan<- turtle.Instruction,
+	forward float64,
 ) {
 	// rewrite rules
 	// https://en.wikipedia.org/wiki/Hilbert_curve#Representation_as_Lindenmayer_system
@@ -95,7 +102,8 @@ func GenerateHilbert(
 	// initial remaining commands to do
 	remaining := "A"
 	// will produce instructions on the channel
-	Instructions(level, instructions, remaining, rules)
+	angle := 90.0
+	Instructions(level, instructions, remaining, rules, angle, forward)
 }
 
 // The dragon curve drawn using an L-system.
@@ -110,7 +118,8 @@ func GenerateHilbert(
 // https://en.wikipedia.org/wiki/L-system#Example_6:_Dragon_curve
 func GenerateDragon(
 	level int,
-	instructions chan<- string,
+	instructions chan<- turtle.Instruction,
+	forward float64,
 ) {
 	rules := map[string]string{
 		"A": "AF+B",
@@ -127,7 +136,8 @@ func GenerateDragon(
 	remaining := "A"
 	// remaining := "X-Y-Y"
 	// will produce instructions on the channel
-	Instructions(level, instructions, remaining, rules)
+	angle := 90.0
+	Instructions(level, instructions, remaining, rules, angle, forward)
 }
 
 // TODO

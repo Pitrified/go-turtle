@@ -45,6 +45,20 @@ func (td *TurtleDraw) SetPos(x, y float64) {
 	}
 }
 
+// Execute the received instruction.
+func (td *TurtleDraw) DoInstruction(i Instruction) {
+	switch i.Cmd {
+	case CmdForward:
+		td.Forward(i.Amount)
+	case CmdBackward:
+		td.Backward(i.Amount)
+	case CmdLeft:
+		td.Left(i.Amount)
+	case CmdRight:
+		td.Right(i.Amount)
+	}
+}
+
 // Write the TurtleDraw state.
 func (td *TurtleDraw) String() string {
 	sT := td.Turtle.String()

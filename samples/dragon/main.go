@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/Pitrified/go-turtle"
 	"github.com/Pitrified/go-turtle/fractal"
@@ -11,16 +10,16 @@ import (
 func dragonSingle(level int) {
 
 	// receive the instructions here
-	instructions := make(chan string)
-
-	// will produce instructions on the channel
-	go fractal.GenerateDragon(level, instructions)
-
-	// the size of the image
-	imgRes := 1080
+	instructions := make(chan turtle.Instruction)
 
 	// segment size for the dragon
 	segLen := 10.0
+
+	// will produce instructions on the channel
+	go fractal.GenerateDragon(level, instructions, segLen)
+
+	// the size of the image
+	imgRes := 1080
 
 	// create a new world to draw in
 	w := turtle.NewWorld(imgRes, imgRes)
@@ -29,21 +28,22 @@ func dragonSingle(level int) {
 	td := turtle.NewTurtleDraw(w)
 	td.SetPos(500, 500)
 	td.PenDown()
-	td.SetColor(color.RGBA{150, 75, 0, 255})
+	td.SetColor(turtle.DarkOrange)
 
-	for cmd := range instructions {
-		switch cmd {
-		case "F":
-			td.Forward(segLen)
-		case "R":
-			td.Right(90)
-			// td.Right(60)
-			// td.Right(120)
-		case "L":
-			td.Left(90)
-			// td.Left(60)
-			// td.Left(120)
-		}
+	for i := range instructions {
+		td.DoInstruction(i)
+		// switch i.Cmd {
+		// case turtle.CmdForward:
+		// 	td.Forward(i.Amount)
+		// case "R":
+		// 	td.Right(90)
+		// 	// td.Right(60)
+		// 	// td.Right(120)
+		// case "L":
+		// 	td.Left(90)
+		// 	// td.Left(60)
+		// 	// td.Left(120)
+		// }
 	}
 
 	// outImgName := fmt.Sprintf("dragon_single_%02d_%d.png", level, imgRes)

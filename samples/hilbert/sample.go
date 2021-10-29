@@ -12,10 +12,7 @@ import (
 func hilbertSingle(level int) {
 
 	// receive the instructions here
-	instructions := make(chan string)
-
-	// will produce instructions on the channel
-	go fractal.GenerateHilbert(level, instructions)
+	instructions := make(chan turtle.Instruction)
 
 	// the size of the image
 	imgRes := 1080
@@ -23,6 +20,9 @@ func hilbertSingle(level int) {
 	// the step for each Hilbert curve segment
 	pad := 80
 	segLen := getSegmentLen(level, imgRes-pad)
+
+	// will produce instructions on the channel
+	go fractal.GenerateHilbert(level, instructions, segLen)
 
 	// create a new world to draw in
 	w := turtle.NewWorld(imgRes, imgRes)
@@ -33,15 +33,16 @@ func hilbertSingle(level int) {
 	td.PenDown()
 	td.SetColor(color.RGBA{150, 75, 0, 255})
 
-	for cmd := range instructions {
-		switch cmd {
-		case "F":
-			td.Forward(segLen)
-		case "R":
-			td.Right(90)
-		case "L":
-			td.Left(90)
-		}
+	for i := range instructions {
+		td.DoInstruction(i)
+		// switch cmd {
+		// case "F":
+		// 	td.Forward(segLen)
+		// case "R":
+		// 	td.Right(90)
+		// case "L":
+		// 	td.Left(90)
+		// }
 	}
 
 	outImgName := fmt.Sprintf("hilbert_single_%02d_%d.png", level, imgRes)
@@ -50,10 +51,7 @@ func hilbertSingle(level int) {
 
 func hilbertFancy(level int, sides int) {
 	// receive the instructions here
-	instructions := make(chan string)
-
-	// will produce instructions on the channel
-	go fractal.GenerateHilbert(level, instructions)
+	instructions := make(chan turtle.Instruction)
 
 	// the size of the image
 	imgHeight := 1080 * 2
@@ -77,6 +75,9 @@ func hilbertFancy(level int, sides int) {
 
 	// segment length for the Hilbert curve
 	segLen := getSegmentLen(level, int(side))
+
+	// will produce instructions on the channel
+	go fractal.GenerateHilbert(level, instructions, segLen)
 
 	// create a new world to draw in
 	w := turtle.NewWorld(imgWidth, imgHeight)
@@ -110,14 +111,15 @@ func hilbertFancy(level int, sides int) {
 	// generate the instructions once and move all the turtles!
 	for cmd := range instructions {
 		for i := 0; i < sides; i++ {
-			switch cmd {
-			case "F":
-				tDraw[i].Forward(segLen)
-			case "R":
-				tDraw[i].Right(90)
-			case "L":
-				tDraw[i].Left(90)
-			}
+			tDraw[i].DoInstruction(cmd)
+			// switch cmd {
+			// case "F":
+			// 	tDraw[i].Forward(segLen)
+			// case "R":
+			// 	tDraw[i].Right(90)
+			// case "L":
+			// 	tDraw[i].Left(90)
+			// }
 		}
 	}
 
