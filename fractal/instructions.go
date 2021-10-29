@@ -103,12 +103,16 @@ func GenerateDragon(level int, instructions chan<- turtle.Instruction, forward f
 	Instructions(level, instructions, remaining, rules, angle, forward)
 }
 
+// Generate instructions to draw a Sierpinski arrowhead curve.
+//
 // https://en.wikipedia.org/wiki/Sierpi%C5%84ski_curve#Arrowhead_curve
 func GenerateSierpinskiArrowhead(level int, instructions chan<- turtle.Instruction, forward float64) {
 	rules := map[byte]string{'X': "Y-X-Y", 'Y': "X+Y+X"}
 	Instructions(level, instructions, "X", rules, 60, forward)
 }
 
+// Generate instructions to draw a Sierpinski triangle.
+//
 // https://en.wikipedia.org/wiki/L-system#Example_5:_Sierpinski_triangle
 func GenerateSierpinskiTriangle(level int, instructions chan<- turtle.Instruction, forward float64) {
 	rules := map[byte]string{'X': "X-Y+X+Y-X", 'Y': "YY"}

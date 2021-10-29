@@ -3,7 +3,7 @@
 [Turtle graphics](https://en.wikipedia.org/wiki/Turtle_graphics)
 in Go.
 
-A couple of small showcase scripts are in the
+A couple of showcase scripts are in the
 [samples](samples)
 folder.
 
@@ -14,6 +14,10 @@ Moving around:
 A conveniently 4K shaped image:
 
 ![hilbert curve times 19](samples/hilbert/hilbert_fancy_4k.png)
+
+And another to be safe:
+
+![dragon level 12](samples/fractal/dragon_12_4K.png)
 
 ## Turtle
 
@@ -127,6 +131,47 @@ the expensive computation to generate the Hilbert fractal instructions is only d
 
 When drawing, a turtle sends the line to the world on a channel
 and blocks until it is done.
+
+## Instructions
+
+A simple struct is defined
+to pack the information needed to carry out an action.
+
+```go
+type CmdType byte
+const (
+	CmdForward CmdType = iota
+	CmdBackward
+	CmdLeft
+	CmdRight
+)
+
+type Instruction struct {
+	Cmd    CmdType
+	Amount float64
+}
+```
+
+Which can be directly sent to a turtle:
+
+```go
+td.DoInstruction(i)
+```
+
+## Fractals
+
+Turtle graphics are very useful to draw fractals.
+
+The `fractal` package provides some functions to draw fractals,
+as a
+[Lindenmayer system](https://en.wikipedia.org/wiki/L-system).
+
+The functions generate `Instructions` on a channel,
+that can be executed as needed.
+
+In the sample folder, there is a
+[script](samples/fractal/main.go)
+that provides a CLI to generate nice images.
 
 ## Constants
 
