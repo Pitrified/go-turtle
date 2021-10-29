@@ -2,6 +2,7 @@ package turtle
 
 import (
 	"image"
+	"image/color"
 	"image/draw"
 	"image/png"
 	"os"
@@ -17,29 +18,57 @@ type World struct {
 	closeCh    chan bool
 }
 
-// Create a new empty World.
+// Create a new World of the requested size.
 func NewWorld(width, height int) *World {
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	draw.Draw(img, img.Bounds(), &image.Uniform{SoftBlack}, image.Point{0, 0}, draw.Src)
-	return NewWorldImage(img)
+	return NewWorldWithColor(width, height, SoftBlack)
 }
 
-// Create a new World attached to the Image img,
-// and start listening on w.DrawLineCh for lines to draw.
-func NewWorldImage(img *image.RGBA) *World {
+// Create a new World of the requested size and background color.
+func NewWorldWithColor(width, height int, c color.Color) *World {
+	m := image.NewRGBA(image.Rect(0, 0, width, height))
+	draw.Draw(m, m.Bounds(), &image.Uniform{c}, image.Point{0, 0}, draw.Src)
+	return NewWorldWithImage(m)
+}
+
+// Create a new World attached to an image.
+func NewWorldWithImage(m *image.RGBA) *World {
 	drawCh := make(chan Line)
 	doneCh := make(chan bool)
 	closeCh := make(chan bool)
 	w := &World{
-		Image:      img,
-		Width:      img.Bounds().Max.X,
-		Height:     img.Bounds().Max.Y,
+		Image:      m,
+		Width:      m.Bounds().Max.X,
+		Height:     m.Bounds().Max.Y,
 		DrawLineCh: drawCh,
 		doneLineCh: doneCh,
 		closeCh:    closeCh,
 	}
+	// Start listening on w.DrawLineCh for lines to draw.
 	go w.listen()
 	return w
+}
+
+// Reset the current image, keep the current size, default background color.
+func (w *World) ResetImage() {
+	w.ResetImageWithSizeColor(w.Width, w.Height, SoftBlack)
+}
+
+// Reset the current image, changing the size, default background color.
+func (w *World) ResetImageWithSize(width, height int) {
+	w.ResetImageWithSizeColor(width, height, SoftBlack)
+}
+
+// Reset the current image, changing the size and background color.
+func (w *World) ResetImageWithSizeColor(width, height int, c color.Color) {
+	m := image.NewRGBA(image.Rect(0, 0, width, height))
+	draw.Draw(m, m.Bounds(), &image.Uniform{c}, image.Point{0, 0}, draw.Src)
+}
+
+// Reset the current image to the provided one.
+func (w *World) ResetImageWithImage(m *image.RGBA) {
+	w.Image = m
+	w.Width = m.Bounds().Max.X
+	w.Height = m.Bounds().Max.Y
 }
 
 // Save output

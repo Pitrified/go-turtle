@@ -98,7 +98,7 @@ func dots(td *turtle.TurtleDraw) {
 	}
 }
 
-func main() {
+func general() {
 	// create a new world to draw in
 	w := turtle.NewWorld(900, 600)
 
@@ -121,21 +121,71 @@ func main() {
 		fmt.Println("Could not save the image: ", err)
 	}
 
-	// close the world
+	// close the world (you might want to defer this)
 	w.Close()
 
 	// this is an error: the turtle tries to send the line
 	// to the world input channel that has been closed
 	// td.Forward(50)
+}
+
+func constructor() {
 
 	// pass an image to the world
 	img := image.NewRGBA(image.Rect(0, 0, 900, 600))
 	draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan}, image.Point{0, 0}, draw.Src)
-	wi := turtle.NewWorldImage(img)
+	wi := turtle.NewWorldWithImage(img)
+	defer wi.Close()
 	tdi := turtle.NewTurtleDraw(wi)
 	circle(tdi)
-	err = wi.SaveImage("cyan_world.png")
+	err := wi.SaveImage("cyan_world.png")
 	if err != nil {
 		fmt.Println("Could not save the image: ", err)
 	}
+
+	// create a world with color
+	wc := turtle.NewWorldWithColor(900, 600, turtle.Yellow)
+	defer wc.Close()
+	tdc := turtle.NewTurtleDraw(wc)
+	circle(tdc)
+	err = wc.SaveImage("yellow_world.png")
+	if err != nil {
+		fmt.Println("Could not save the image: ", err)
+	}
+
+}
+
+func reset() {
+	// create a World and draw something
+	w := turtle.NewWorld(900, 600)
+	td := turtle.NewTurtleDraw(w)
+	squiggly(td)
+
+	// reset with same size
+	w.ResetImage()
+	squiggly(td)
+	_ = w.SaveImage("resetImage.png")
+
+	// reset with new size
+	w.ResetImageWithSize(1200, 1200)
+	squiggly(td)
+	_ = w.SaveImage("resetSize.png")
+
+	// reset with new size and color
+	w.ResetImageWithSizeColor(1200, 1200, turtle.Magenta)
+	squiggly(td)
+	_ = w.SaveImage("resetSizeColor.png")
+
+	// reset with new custom image
+	img := image.NewRGBA(image.Rect(0, 0, 600, 900))
+	draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan}, image.Point{0, 0}, draw.Src)
+	w.ResetImageWithImage(img)
+	squiggly(td)
+	_ = w.SaveImage("resetImageImage.png")
+}
+
+func main() {
+	general()
+	constructor()
+	reset()
 }

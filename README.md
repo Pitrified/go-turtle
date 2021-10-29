@@ -54,21 +54,25 @@ Has the same interface of `Turtle`, but draws.
 Each `TurtleDraw` is attached to a `World`.
 
 Create a new world to draw in:
+an uniform image of the requested size `(width, height)`
+with `SoftBlack` background is generated.
 
 ```go
 w := turtle.NewWorld(900, 600)
 ```
 
-When creating a `World` with `NewWorld`,
-an uniform image of the requested size `(width, height)`
-with `SoftBlack` background is generated.
+The background color can be set:
+
+```go
+w := turtle.NewWorldWithColor(900, 600, turtle.Yellow)
+```
 
 An existing image can be used as base:
 
 ```go
 img := image.NewRGBA(image.Rect(0, 0, 900, 600))
 draw.Draw(img, img.Bounds(), &image.Uniform{turtle.Cyan}, image.Point{0, 0}, draw.Src)
-wi := turtle.NewWorldImage(img)
+wi := turtle.NewWorldWithImage(img)
 ```
 
 Create a `TurtleDraw` attached to the `World`:

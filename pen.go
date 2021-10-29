@@ -30,6 +30,15 @@ func (p *Pen) PenUp() {
 	p.On = false
 }
 
+// Toggle the pen state.
+func (p *Pen) PenToggle() {
+	if p.On {
+		p.On = false
+	} else {
+		p.On = true
+	}
+}
+
 // Change the Pen color.
 func (p *Pen) SetColor(c color.Color) {
 	p.Color = c
@@ -40,7 +49,11 @@ func (p *Pen) SetSize(s int) {
 	p.Size = s
 }
 
+var _ fmt.Stringer = &Pen{}
+
 // Write the Pen state.
+//
+// Implements: fmt.Stringer
 func (p *Pen) String() string {
 	return fmt.Sprintf("%v, %d, %t", p.Color, p.Size, p.On)
 }
