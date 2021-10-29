@@ -6,64 +6,16 @@ import (
 	"math"
 
 	"github.com/Pitrified/go-turtle"
+	"github.com/Pitrified/go-turtle/fractal"
 )
 
-// https://en.wikipedia.org/wiki/Hilbert_curve#Representation_as_Lindenmayer_system
-func hilbertInstructions(
-	level int,
-	remaining string,
-	instructions chan<- string,
-	rules map[string]string,
-) string {
-
-	for len(remaining) > 0 {
-		curChar := remaining[0]
-		remaining = remaining[1:]
-
-		switch curChar {
-
-		case '|':
-			return remaining
-
-		case '+':
-			instructions <- "L"
-		case '-':
-			instructions <- "R"
-
-		case 'F':
-			instructions <- "F"
-
-		case 'A':
-			if level > 0 {
-				remaining = rules["A"] + "|" + remaining
-				remaining = hilbertInstructions(
-					level-1, remaining, instructions, rules)
-			}
-		case 'B':
-			if level > 0 {
-				remaining = rules["B"] + "|" + remaining
-				remaining = hilbertInstructions(
-					level-1, remaining, instructions, rules)
-			}
-		}
-	}
-
-	close(instructions)
-	return ""
-}
-
-func hilbertSingle(
-	level int,
-	rules map[string]string,
-) {
-	// initial remaining commands to do
-	remaining := rules["A"]
+func hilbertSingle(level int) {
 
 	// receive the instructions here
 	instructions := make(chan string)
 
 	// will produce instructions on the channel
-	go hilbertInstructions(level, remaining, instructions, rules)
+	go fractal.GenerateHilbert(level, instructions)
 
 	// the size of the image
 	imgRes := 1080
@@ -95,19 +47,12 @@ func hilbertSingle(
 	w.SaveImage(outImgName)
 }
 
-func hilbertFancy(
-	level int,
-	sides int,
-	rules map[string]string,
-) {
-	// initial remaining commands to do
-	remaining := rules["A"]
-
+func hilbertFancy(level int, sides int) {
 	// receive the instructions here
 	instructions := make(chan string)
 
 	// will produce instructions on the channel
-	go hilbertInstructions(level, remaining, instructions, rules)
+	go fractal.GenerateHilbert(level, instructions)
 
 	// the size of the image
 	imgHeight := 1080 * 2
@@ -190,17 +135,11 @@ func main() {
 	// recursion level
 	level := 2
 
-	// rewrite rules
-	rules := map[string]string{
-		"A": "+BF-AFA-FB+",
-		"B": "-AF+BFB+FA-",
-	}
-
 	// draw a single Hilbert curve
-	hilbertSingle(level, rules)
+	hilbertSingle(level)
 
 	// draw a zillion of them
 	sides := 19
-	hilbertFancy(level, sides, rules)
+	hilbertFancy(level, sides)
 
 }
