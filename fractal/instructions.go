@@ -47,16 +47,16 @@ func Instructions(
 
 		// move forward explicitly when an 'F' is encountered
 		case 'A', 'B', 'C', 'D':
-			if level >= 0 {
+			if level > 0 {
 				remaining = rules[curChar] + "|" + remaining
 				remaining = Instructions(level-1, instructions, remaining, rules, angle, forward)
 			}
 
 		// move forward when the base of the recursion is reached
 		case 'X', 'Y', 'W', 'Z':
-			if level == -1 {
+			if level == 0 {
 				instructions <- turtle.Instruction{Cmd: turtle.CmdForward, Amount: forward}
-			} else if level >= 0 {
+			} else if level > 0 {
 				remaining = rules[curChar] + "|" + remaining
 				remaining = Instructions(level-1, instructions, remaining, rules, angle, forward)
 			}
@@ -67,25 +67,17 @@ func Instructions(
 	return ""
 }
 
-// Generate instructions to draw a Hilbert curve.
+// Generate instructions to draw a Hilbert curve,
+// with the requested recursion level,
+// receiving Instruction on the channel instructions.
 //
-// With the requested recursion level, receiving Instruction on channel instructions.
-//
-// The channel will be closed to signal the end of the instructions.
+// The channel will be closed to signal the end of the stream.
 //
 // For more information:
 // https://en.wikipedia.org/wiki/Hilbert_curve#Representation_as_Lindenmayer_system
 func GenerateHilbert(level int, instructions chan<- turtle.Instruction, forward float64) {
-	// rewrite rules
-	// https://en.wikipedia.org/wiki/Hilbert_curve#Representation_as_Lindenmayer_system
-	rules := map[byte]string{
-		'A': "+BF-AFA-FB+",
-		'B': "-AF+BFB+FA-",
-	}
-	// initial remaining commands to do
-	remaining := "A"
-	angle := 90.0
-	Instructions(level, instructions, remaining, rules, angle, forward)
+	rules := map[byte]string{'A': "+BF-AFA-FB+", 'B': "-AF+BFB+FA-"}
+	Instructions(level, instructions, "A", rules, 90, forward)
 }
 
 // Generate instructions to draw a dragon curve.
@@ -114,10 +106,11 @@ func GenerateDragon(level int, instructions chan<- turtle.Instruction, forward f
 // https://en.wikipedia.org/wiki/Sierpi%C5%84ski_curve#Arrowhead_curve
 func GenerateSierpinskiArrowhead(level int, instructions chan<- turtle.Instruction, forward float64) {
 	rules := map[byte]string{'X': "Y-X-Y", 'Y': "X+Y+X"}
-	remaining := "X"
-	// remaining := "A"
-	// remaining := "X-Y-Y"
-	// will produce instructions on the channel
-	angle := 60.0
-	Instructions(level, instructions, remaining, rules, angle, forward)
+	Instructions(level, instructions, "X", rules, 60, forward)
+}
+
+// https://en.wikipedia.org/wiki/L-system#Example_5:_Sierpinski_triangle
+func GenerateSierpinskiTriangle(level int, instructions chan<- turtle.Instruction, forward float64) {
+	rules := map[byte]string{'X': "X-Y+X+Y-X", 'Y': "YY"}
+	Instructions(level, instructions, "X-Y-Y", rules, 120, forward)
 }
